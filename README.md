@@ -3,6 +3,7 @@
    - [蓝桥杯嵌入式基础](./Blue.md)
    - [蓝桥杯嵌入式模拟题](./BlueSimulation.md)
 2. Linux 嵌入式
-   - [Linux IO 进程](./10_IO_process.md)
+   - [IO 进程](./10_IO_process.md)
+   - [并发程序设计](./11_Concurrent_Programming.md)
 3. 
 
