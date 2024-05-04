@@ -245,7 +245,7 @@ Linux进程命令
     - 结束当前的进程并将status返回
     - exit结束进程时会刷新(流)缓冲区
   -  void _exit(int status);
-    - 不刷新(流)缓冲区
+     -  刷新(流)缓冲区
 
 **注意：**return 和 exit 的区别
 		main函数结束时会隐式地调用exit函数，普通函数return是返回上一级。
