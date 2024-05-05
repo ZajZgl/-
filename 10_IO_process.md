@@ -3,52 +3,35 @@
 - Linux IO进程学习目的：学习编写linux应用程序（APP）
 
 - Linux文件的种类 :
-
   -   常规文件
-
   -   目录文件
-
   -   字符文件
-
   -   块文件
-
   -   链接文件（相当于windows快捷方式）
 
 -  IO的概念
-
   -   I input  输入设备 比如键盘鼠标都是Input设备
-
   -   O output  输出设备 比如显示器
-
   -   优盘，网口，既是输入也是输出
 
 - 系统调用和库函数
-
   - 系统调用就是操作系统提供的接口函数.
-
   - 如果我们把系统调用封装成库函数就可以起到隔离的作用，提供程序的可移植性。
-
   - Printf就是库函数然后调用了系统调用才在显示器上显示字符。
 
 - 流的概念
   - 就是数据的流，在程序中就是一个结构体。
 
 - Windows 和linux的换行符区别
-
   -   Windows是\r\n 
-
   -   Linux 是\n
 
 - 缓冲区的概念
-
   -   为了减少操作IO设备的次数，提高运行效率，在内存里面设置的缓冲区，
-
   -   全缓冲：缓冲区满才输出
-
   -   行缓冲：遇到换行符输出
-
-  - 程序正常结束会刷新缓冲区。
-
+  - 程序正常结束会刷新缓冲区
+  
 -  三种标准IO ：
 
 | 标准输入流（键盘）   | 0    | STDIN_FILENO  | stdin  |
@@ -56,12 +39,11 @@
 | 标准输出流（显示器） | 1    | STDOUT_FILENO | stdout |
 | 标准错误流           | 2    | STDERR_FILENO | stderr |
 
-## 文件打开和关闭
+## 1.文件打开和关闭
 
 **文件的打开和关闭概念**
 
 打开就是占用资源
-
 关闭就是释放资源
 
 ### **文件的打开**
@@ -93,20 +75,16 @@
 ### **文件的关闭：**
 
 - 函数原型：int fclose(FILE *stream)
-
   - fclose()调用成功返回0，失败返回EOF（-1），并设置errno
-
   - 流关闭时自动刷新缓冲中的数据并释放缓冲区，比如：常规文件把缓冲区内容写入磁盘
-
   - 当一个程序正常终止时，所有打开的流都会被关闭
-
   - fclose()函数的入参stream必须保证为非空，否则出现断错误。
 
-## 标准输入输出
+## 2.标准输入输出
 
 标准IO的字符输入和输出
 
-### **字符的输入（读单个字符）：**
+### **字符的输入（读单个字符）**
 
 - int fgetc(FILE *stream);
 -  int getc(FILE *stream);  //宏
@@ -121,29 +99,22 @@
 **注意事项：**
 
 1. 函数返回值是int类型不是char类型，主要是为了扩展返回值的范围。
-
 2. tdin 也是FILE *的指针，是系统定义好的,指向的是标准输入（键盘输入）
-
 3. ==打开文件后读取，是从文件开头开始读。读完一个后读写指针会后移。读写注意文件位置！==
-
 4. 调用getchar会阻塞，等待你的键盘输入
 
- 
-
-### 字符的输出（写单个字符）：
+### 字符的输出（写单个字符）
 
 - int fputc(int c, FILE *stream);
 - int putc(int c, FILE *stream);
 - int putchar(int c);
 
 > 成功时返回写入的字符；出错时返回EOF(-1)
->
 > putchar(c) 等同于fputc(c, stdout)
 
 **注意事项：**
 
 1. 返回和输入参数都是int类型
-
 2. 遇到这种错误：Bad file descriptor， 很可能是文件打开的模式错误（只读模式去写，只写模式去读）
 
 ### 行输出（读取整个行）
@@ -152,13 +123,11 @@
 - char *fgets(char *s, int size, FILE *stream);
 
 > 成功时返回s，到文件末尾或出错时返回NULL
->
 > 遇到’\n’或已输入size-1个字符时返回，总是包含’\0’
 
 **注意事项：**
 
 1 gets函数已经被淘汰，因为会导致缓冲区溢出
-
 2 fgets 函数第二个参数，输入的数据超出size，size-1个字符会保存到缓冲区，最后添加’\0’，如果输入数据少于size-1 后面会添加换行符。
 
 ### 行输出（写整行）
@@ -167,9 +136,7 @@
 - int fputs(const char *s, FILE *stream);
 
 > 成功时返回非负整数；出错时返回EOF
->
 > puts将缓冲区s中的字符串输出到stdout，并追加’\n’
->
 > fputs将缓冲区s中的字符串输出到stream,不追加 ‘\n’
 
 ### 代码
@@ -196,7 +163,7 @@ int main(int argc, const char *argv[])
 }
 ```
 
-##**二进制读写**
+## 3.**二进制读写**
 
 文本文件和二进制的区别：
 
@@ -289,7 +256,7 @@ end:
 }
 ```
 
-## 流的刷新
+## 4.流的刷新
 
 -  int fflush(FILE *fp);
   - 成功时返回0；出错时返回EOF
@@ -297,33 +264,24 @@ end:
   - Linux下只能刷新输出缓冲区,输入缓冲区丢弃
 - 如果输出到屏幕使用fflush(stdout)
 
-## 流的定位
+## 5.流的定位
 
 - long ftell(FILE *stream); //返回当前文件指针位置
-
 - void rewind(FILE *stream);  //将读写位置指向文件开头
-
 - long fseek(FILE *stream, long offset, int whence);//移动指针
-
-  - offset参数：偏移量，可正可负
-
-  - fseek 函数whence参数：SEEK_SET/SEEK_CUR/SEEK_END
-
-    - SEEK_SET ：从距文件**开头** offset 位移量为新的读写位置
-
-    - SEEK_CUR：以**目前的读写位置**往后增加 offset 个位移量
-
-    - SEEK_END：将读写位置指向文件**结尾**后再增加 offset 个位移量
+   - offset参数：偏移量，可正可负
+   - fseek 函数whence参数：SEEK_SET/SEEK_CUR/SEEK_END
+      - SEEK_SET ：从距文件**开头** offset 位移量为新的读写位置
+      - SEEK_CUR：以**目前的读写位置**往后增加 offset 个位移量
+      - SEEK_END：将读写位置指向文件**结尾**后再增加 offset 个位移量
 
 **注意事项：**
 
 1. ==文件的打开使用a模式 fseek无效==
-
 2. rewind(fp) 相当于 fseek(fp,0,SEEK_SET);
-
 3. 这三个函数只适用2G以下的文件
 
-##  格式化输入输出
+##  6.格式化输入输出
 
 **输入**
 
@@ -339,7 +297,7 @@ end:
 - **snprintf**：与`sprintf`类似，但`snprintf`允许你指定一个最大长度，以防止缓冲区溢出。
 - **vprintf**、**vfprintf** 和 **vsprintf**：这些是可变参数版本的格式化输出函数，它们接受一个参数列表，而不是固定数量的参数。这使得它们在参数数量不确定时更加灵活。
 
-## 标准IO-练习
+## 7.标准IO-练习
 
 每隔1秒向文件1.txt写入当前系统时间,行号递增
 
@@ -436,7 +394,7 @@ int main(int argc, const char *argv[])
 
 ```
 
-## 文件IO
+## 8.文件IO
 
 **介绍：**
 
@@ -518,11 +476,8 @@ int main(int argc, const char *argv[])
 ### 文件I/O关闭-close
 
 > close函数用来关闭一个打开的文件:
->
 >  \#include <unistd.h>
->
 >  int close(int fd);
->
 > - 成功时返回0；出错时返回EOF
 > - 程序结束时自动关闭所有打开的文件
 > - ==文件关闭后，文件描述符不再代表文件==
@@ -530,11 +485,8 @@ int main(int argc, const char *argv[])
 ### 文件I/O读-read
 
 >  read函数用来从文件中读取数据:
->
 >  \#include <unistd.h>
->
 >  ssize_t read(int fd, void *buf, size_t count);
->
 > - 成功时返回实际读取的字节数；出错时返回EOF
 > - 读到文件末尾时返回0
 > - buf是接收数据的缓冲区
@@ -545,11 +497,8 @@ int main(int argc, const char *argv[])
 ### 文件I/O写-write
 
 > write函数用来向文件写入数据:
->
 >  \#include <unistd.h>
->
 >  ssize_t write(int fd, void *buf, size_t count);
->
 > - 成功时返回实际写入的字节数；出错时返回EOF
 > - buf是发送数据的缓冲区
 > - count不应超过buf大小
@@ -557,11 +506,8 @@ int main(int argc, const char *argv[])
 **文件I/O定位-lseek**
 
 > lseek函数用来定位文件:
->
->  \#include <unistd.h>
->
->  off_t lseek(int fd, off_t offset, intt whence);
->
+> \#include <unistd.h>
+> off_t lseek(int fd, off_t offset, intt whence);
 > - 成功时返回当前的文件读写位置；出错时返回EOF
 > - 参数offset和参数whence同fseek完全一样
 
@@ -631,25 +577,20 @@ int main(int argc, const char *argv[])
 | 读   | getc,fgetc,getchar,fgets,gets,fread  | read           |
 | 写   | putc,fputc,putchar,fputs,puts,fwrite | write          |
 
-## 目录
+## 9.目录
 
 **打开目录**
 
 > \#include <dirent.h>
->
 > DIR *opendir(const char *name);
->
 > - DIR *fdopendir(int fd); 使用文件描述符，要配合open函数使用
->
 > - DIR是用来描述一个打开的目录文件的结构体类型
 > - 成功时返回目录流指针；出错时返回NULL
 
 **读取目录**
 
 > \#include <dirent.h>
->
 >  struct dirent *readdir(DIR *dirp);
->
 > - struct dirent是用来描述目录流中一个目录项的结构体类型
 > - 包含成员char d_name[256]  参考帮助文档
 > - 成功时返回目录流dirp中下一个目录项；
@@ -658,11 +599,8 @@ int main(int argc, const char *argv[])
 **关闭目录**
 
 > closedir函数用来关闭一个目录文件:
->
 > \#include <dirent.h>
->
 > int closedir(DIR *dirp);
->
 > - 成功时返回0；出错时返回EOF
 
 示例
@@ -693,18 +631,14 @@ int main(int argc, const char *argv[])
 
 利用pwd命令获取目录地址
 
-## 文件权限与属性
+## 10.文件权限与属性
 
 **修改文件权限**
 
 > chmod/fchmod函数用来修改文件的访问权限:
->
 > \#include <sys/stat.h>
->
 > int chmod(const char *path, mode_t mode);
->
 > int fchmod(int fd, mode_t mode);
->
 > - 成功时返回0；出错时返回EOF
 > - ==注意：在vmware和windows共享的文件夹下，有些权限不能改变。==
 
@@ -726,13 +660,9 @@ int main(int argc,char **argv){
 **获取文件属性**
 
 > \#include <sys/stat.h>
->
 > int stat(const char *path, struct stat *buf);
->
 > int lstat(const char *path, struct stat *buf);
->
 > int fstat(int fd, struct stat *buf);
->
 > - 成功时返回0；出错时返回EOF
 > - 如果path是符号链接stat获取的是目标文件的属性；而lstat获取的是链接文件的属性
 
@@ -785,7 +715,7 @@ int main(int argc, const char *argv[])
 }
 ```
 
-## 静态库与动态库
+## 11.静态库与动态库
 
 **静态库与动态库的差异：**
 
@@ -796,34 +726,22 @@ int main(int argc, const char *argv[])
 ### **创建静态库：**
 
 > 1.  编写库文件代码,编译hello.c 生成 hello.o文件。
->
 >    命令: $gcc -o hello.o -c hello.c
->
 > 2.  ar 命令 创建 libhello.a 文件
->
 >    命令：$ar -rsv libhello.a hello.o
->
+>    
 > **链接使用：**
->
 > - 编译生成可执行文件
->
 >   $gcc -o 目标文件 源码.c -L路径 -lxxxx
->
 >   -L 后面写库所在的路径（'.'当前路径）
->
 >   -l 后面跟库的名称（不加后缀）
->
 >   **注意：**
->
 > - 静态库名字要以lib开头，后缀名为.a
 > - 没有main函数的.c 文件不能生成可执行文件。
->
+> 
 > > 查看静态库详细信息：
-> >
 > > ​	$ar -tv libhello.a
-> >
 > > ar 命令参数：
-> >
 > > - c   禁止在创建库时产生的正常消息
 > > - r    如果指定的文件已经存在于库中，则替换它
 > > - s   无论 ar 命令是否修改了库内容都强制重新**生成库符号表**
@@ -834,19 +752,14 @@ int main(int argc, const char *argv[])
 ###  **创建动态库：**
 
 > 1. 生成位置无关代码的 .o 目标文件
->
 >     $gcc -c  -fPIC  xxx.c xxxx.c ....
->
 > 2. 生成动态库
->
 >    $gcc -shared -o libxxxx.so xxx.o xxx.o ....
 >
 >    注意:动态库名字要以lib开头，后缀名为.so
 >
 > **链接使用：**
->
 > - 编译生成执行文件（同静态库）
->
 >   $gcc -o 目标文件 源码.c -L路径 -lxxxx
 
 **执行动态库的可执行文件错误**
