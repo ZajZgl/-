@@ -1,4 +1,8 @@
-#  IO进程
+[TOC]
+
+
+
+#  IO进程 文件IO
 
 - Linux IO进程学习目的：学习编写linux应用程序（APP）
 
@@ -46,7 +50,7 @@
 打开就是占用资源
 关闭就是释放资源
 
-### **文件的打开**
+### 文件的打开
 
 - 文件的打开函数：FILE *fopen (const char *path, const char *mode);
   - Path: 普通文件当前路径不需要加目录，其他要使用完整的路径
@@ -72,7 +76,7 @@
 
 > strerror使用：`printf("fopen:%s\n",strerror(errno));`
 
-### **文件的关闭：**
+### 文件的关闭
 
 - 函数原型：int fclose(FILE *stream)
   - fclose()调用成功返回0，失败返回EOF（-1），并设置errno
@@ -84,7 +88,7 @@
 
 标准IO的字符输入和输出
 
-### **字符的输入（读单个字符）**
+### 字符的输入（读单个字符）
 
 - int fgetc(FILE *stream);
 -  int getc(FILE *stream);  //宏
@@ -163,7 +167,7 @@ int main(int argc, const char *argv[])
 }
 ```
 
-## 3.**二进制读写**
+## 3.二进制读写
 
 文本文件和二进制的区别：
 
@@ -405,7 +409,7 @@ int main(int argc, const char *argv[])
 - 访问各种类型文件
 - Linux下, 标准IO基于文件IO实现
 
-### **文件描述符概念：**
+### 文件描述符概念
 
 - 英文：缩写fd（file descriptor）
 - 本质是0-1023的数字，表示文件。
@@ -414,7 +418,7 @@ int main(int argc, const char *argv[])
 - 文件描述符从0开始分配，依次递增。
 - 0, 1, 2 的含义 标准输入，标准输出，错误
 
-### **文件IO打开-open**
+### 文件IO打开-open
 
 > - int open(const char *pathname, int flags);  不创建文件
 > - int open(const char *pathname, int flags, mode_t mode); 创建文件，但不能创建设备文件,成功时返回文件描述符；出错时返回EOF
@@ -568,7 +572,7 @@ int main(int argc, const char *argv[])
 }
 ```
 
-### **标准IO对比文件IO**
+### 标准IO对比文件IO
 
 | 功能 | 标准IO                               | 文件IO(低级IO) |
 | ---- | ------------------------------------ | -------------- |
@@ -723,7 +727,7 @@ int main(int argc, const char *argv[])
 >2. **资源占用**：由于静态库的内容在编译时就整合到了程序中，因此会使得最终的可执行文件体积较大，占用更多的磁盘空间和内存资源。相比之下，动态库只在需要时才被加载，可以有效节省系统的资源。
 > 3. **更新和兼容性**：当静态库更新时，需要重新编译所有使用了该静态库的程序才能使更新生效。而对于动态库，只需替换掉共享的库文件即可，不需要重新编译程序。这使得动态库在升级和维护方面更加灵活和方便。
 
-### **创建静态库：**
+### 创建静态库
 
 > 1.  编写库文件代码,编译hello.c 生成 hello.o文件。
 >    命令: $gcc -o hello.o -c hello.c
@@ -749,7 +753,7 @@ int main(int argc, const char *argv[])
 > > - q   将指定的文件添加到库的末尾
 > > - t    将库的目录写至标准输出 
 
-###  **创建动态库：**
+###  创建动态库
 
 > 1. 生成位置无关代码的 .o 目标文件
 >     $gcc -c  -fPIC  xxx.c xxxx.c ....
